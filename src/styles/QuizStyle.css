@@ -1,0 +1,9 @@
+.correct{
+    background-color: #dffff2;
+    border-color: #00d397;
+}
+
+.wrong{
+    background-color: #ffebeb;
+    border-color: #ff4a4a;
+}
