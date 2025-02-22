@@ -9,21 +9,13 @@
 }
 
 .active{
-    animation: progress 5s linear forwards;
+    animation: progress 30s linear forwards;
 }
 @keyframes progress {
     0%{
         width: 0%;
         background:#fe532f;
     }
-    /* 79%{
-        width: 79%;
-        background:#fe532f;
-    }
-    80%{
-        width: 80%;
-        background:#fe532f;
-    } */
     100%{
         width: 100%;
         background:#fe532f;

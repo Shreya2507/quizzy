@@ -64,7 +64,7 @@ function QuizScreen() {
       }
       showNext();
       
-    }, 5 * 1000);
+    }, 30000);
 
     return () => clearTimeout(timer.current);
   }, [index]);
