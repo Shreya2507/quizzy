@@ -1,8 +1,20 @@
-# React + Vite
+<h1>📖 Quizzy - Quizzes made easy</h1>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Tech stack used** - Reactjs, TailwindCSS, IndexedDB
+<br><br>
 
-Currently, two official plugins are available:
+<h2>✨ Features</h2>
+<ul>
+  <li>Engaging Quizzes & Instant feedback</li>
+  <li>Multiple Attempts & Attempt History</li>
+  <li>Time-Based Challenges</li>
+  <li>Progress Tracking & Scoreboard</li>
+</ul>
+<br>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+<h2>🚀 Get Started</h2>
+
+**Visit website** - https://quizzy1234.netlify.app/<br><br>
+**or run app locally**<br>
+1. npm install<br>
+2. npm run dev
