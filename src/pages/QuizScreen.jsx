@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import "../index.css"
-import data from "../assets/data"
+import { data } from "../assets/data"
 import "../styles/QuizStyle.css"
 import { FaHome } from "react-icons/fa";
-import {saveToDB, getAllFromDB } from "../assets/dbUtils"
+import { saveToDB, getAllFromDB } from "../assets/dbUtils"
 
 
 function QuizScreen() {
@@ -16,6 +16,9 @@ function QuizScreen() {
   const [result, setResult] = useState(false);
   const timer = useRef(null);
   const progressBar = useRef(null);
+  const [userAnswer, setUserAnswer] = useState("");
+  const [isCorrect, setIsCorrect] = useState();
+
 
   let Option1 = useRef(null);
   let Option2 = useRef(null);
@@ -23,7 +26,7 @@ function QuizScreen() {
   let Option4 = useRef(null);
   let optionArray = [Option1, Option2, Option3, Option4];
 
-
+  //getting total attempts from db
   useEffect(() => {
     getAllFromDB((data) => {
       const nextAttempt = data.length + 1; // Continue from last attempt
@@ -32,35 +35,42 @@ function QuizScreen() {
 
   }, []);
 
+  //getting top 3 scores for scoreboard
   useEffect(() => {
     getAllFromDB((data) => {
-      const sortedData = data.sort((a, b) => b.value - a.value).slice(0, 3); // Get top 3 scores
+      const sortedData = data.sort((a, b) => b.value - a.value).slice(0, 3);
       setLeaderboard(sortedData);
     });
 
   }, [result]);
 
+  //control timer
   useEffect(() => {
     if (progressBar.current) {
       progressBar.current.classList.remove("active");
-      void progressBar.current.offsetWidth; 
+      void progressBar.current.offsetWidth;
       progressBar.current.classList.add("active");
     }
-  
+
     if (timer.current) {
       clearTimeout(timer.current);
     }
-  
+
     timer.current = setTimeout(() => {
-      optionArray[questionSet.ans - 1].current.classList.add("correct");
+      
       setLock(true);
+      if(questionSet.option1) {
+        optionArray[questionSet.ans - 1].current.classList.add("correct");
+      }
       showNext();
+      
     }, 5 * 1000);
-  
+
     return () => clearTimeout(timer.current);
   }, [index]);
 
 
+  //check for multiple choice questions
   function check(e, ans) {
     if (!lock) {
       if (questionSet.ans === ans) {
@@ -74,6 +84,24 @@ function QuizScreen() {
     }
   }
 
+  //check for text type questions
+  const handleCheck = () => {
+    
+    if (!lock) {
+      if (questionSet.ans === userAnswer) {
+        setScore(prev => prev + 1);
+        console.log("Correct");
+        setIsCorrect(true);
+      } else {
+        console.log("Wrong");
+        setIsCorrect(false);
+      }
+      setLock(true);
+      
+    }
+  };
+
+  //move to next question
   function showNext() {
     if (timer.current) {
       clearTimeout(timer.current);
@@ -90,16 +118,19 @@ function QuizScreen() {
       setIndex(++index);
       setQuestionSet(data[index]);
       setLock(false);
+      setIsCorrect(false);
 
       optionArray.forEach(option => {
         if (option.current) {
           option.current.classList.remove("correct", "wrong");
         }
       });
-      
+
+      setUserAnswer("");
     }
   }
 
+  //attempt again
   function retry() {
     clearTimeout(timer.current);
 
@@ -108,16 +139,13 @@ function QuizScreen() {
     setScore(0);
     setLock(false);
     setResult(false);
-
   }
-
-
 
 
   return (
     <div className='bg-[#111111] w-lvw h-lvh p-10  flex flex-col justify-center items-center text-black font-poppins'>
       <a href='/' className='bg-[#fe532f] absolute left-0 top-0 text-white text-lg rounded-full w-24 h-24 m-10 text-center flex justify-center items-center p-5'><FaHome className='w-full h-full' /></a>
-      <div className='bg-orange-50 rounded-lg w-[40%] p-10 h-full flex flex-col justify-start items-center'>
+      <div className='bg-orange-50 rounded-lg w-[40%] p-12 h-full flex flex-col justify-start items-center'>
 
         {result ?
           <>
@@ -125,7 +153,6 @@ function QuizScreen() {
               🎉 You scored <strong className="text-[#fe532f]">{score}</strong> out of <strong>{data.length}</strong>
             </div>
 
-            {/* Leaderboard Section */}
             <div className="w-full max-w-lg bg-white p-6 rounded-xl shadow-lg mb-12">
               <h2 className="text-[#fe532f] text-2xl font-semibold text-center mb-5">🏆 Leaderboard</h2>
               <ul className="space-y-5">
@@ -164,25 +191,36 @@ function QuizScreen() {
               {index + 1} of {data.length}
             </div>
 
-            {/* Progress Bar */}
             <div className="w-full bg-gray-300 rounded-full h-3">
               <div ref={progressBar}
                 className=" h-3 w-full rounded-full transition-all"
               ></div>
             </div>
 
-            <div className='text-2xl w-full mt-10'>{index + 1}. {questionSet.question}</div>
+            <div className='text-2xl w-full mt-14'>{index + 1}. {questionSet.question}</div>
             <ul className='w-full flex flex-col justify-between gap-5 items-center mt-10 mb-10'>
-              {["option1", "option2", "option3", "option4"].map((option, idx) => (
+              {questionSet["option1"] ? ["option1", "option2", "option3", "option4"].map((option, idx) => (
                 <li
                   key={idx}
                   onClick={(e) => check(e, idx + 1)}
                   ref={optionArray[idx]}
-                  className='w-full border-[1px] border-black py-7 px-5 rounded-lg text-lg cursor-pointer'
+                  className='w-full border-[1px] border-black py-6 px-5 rounded-lg text-lg cursor-pointer'
                 >
                   {questionSet[option]}
                 </li>
-              ))}
+              ))
+                :
+                <div className=' items-start w-full'>
+                  <input type="text" disabled={lock} placeholder='Type in your answer' value={userAnswer}
+                    onChange={(e) => setUserAnswer(parseInt(e.target.value, 10) || "")} className={`w-full border-[1px] border-black ${isCorrect ? 'border-green-700 bg-green-300' : 'border-red-400'} py-5 px-5 rounded-lg text-lg`} />
+                  <button
+                    onClick={handleCheck}
+                    className={`${lock ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#009224] cursor-pointer'} text-white text-lg rounded-lg px-5 py-3 mt-5 transition-all duration-100 ease-in`}
+                  >
+                    Check
+                  </button>
+                </div>
+              }
             </ul>
 
             <button
