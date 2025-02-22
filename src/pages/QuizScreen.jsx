@@ -115,9 +115,9 @@ function QuizScreen() {
 
 
   return (
-    <div className='bg-[#111111] w-lvw h-lvh p-20 flex flex-col justify-center items-center text-black font-poppins'>
-      <a href='/' className='bg-[#fe532f] absolute left-0 top-0 text-white text-2xl rounded-full w-24 h-24 m-10 text-center flex justify-center items-center p-5'><FaHome className='w-full h-full' /></a>
-      <div className='bg-orange-50 rounded-2xl w-[40%] p-10 h-full flex flex-col justify-start items-center'>
+    <div className='bg-[#111111] w-lvw h-lvh p-10  flex flex-col justify-center items-center text-black font-poppins'>
+      <a href='/' className='bg-[#fe532f] absolute left-0 top-0 text-white text-lg rounded-full w-24 h-24 m-10 text-center flex justify-center items-center p-5'><FaHome className='w-full h-full' /></a>
+      <div className='bg-orange-50 rounded-lg w-[40%] p-10 h-full flex flex-col justify-start items-center'>
 
         {result ?
           <>
@@ -126,14 +126,14 @@ function QuizScreen() {
             </div>
 
             {/* Leaderboard Section */}
-            <div className="w-full max-w-lg bg-white p-6 rounded-2xl shadow-lg mb-12">
-              <h2 className="text-[#fe532f] text-3xl font-semibold text-center mb-5">🏆 Leaderboard</h2>
+            <div className="w-full max-w-lg bg-white p-6 rounded-xl shadow-lg mb-12">
+              <h2 className="text-[#fe532f] text-2xl font-semibold text-center mb-5">🏆 Leaderboard</h2>
               <ul className="space-y-5">
                 {leaderboard.length > 0 ? (
                   leaderboard.map((entry, index) => (
                     <li key={index} className="flex justify-between px-4 py-4 bg-gray-100 rounded-lg">
-                      <span className="font-semibold text-2xl">Attempt {entry.id}</span>
-                      <span className="text-[#fe532f] text-2xl font-bold">{entry.value} pts</span>
+                      <span className="font-semibold text-lg">Attempt {entry.id}</span>
+                      <span className="text-[#fe532f] text-lg font-bold">{entry.value} pts</span>
                     </li>
                   ))
                 ) : (
@@ -145,41 +145,40 @@ function QuizScreen() {
 
             <button
               onClick={retry}
-              className="bg-[#fe532f] text-white text-2xl rounded-full w-[70%] h-16 mb-5 flex justify-center items-center shadow-lg hover:bg-[#e04529] transition-all"
+              className="bg-[#fe532f] text-white text-lg rounded-full w-[70%] h-16 mb-5 flex justify-center items-center shadow-lg hover:bg-[#e04529] transition-all"
             >
               TRY AGAIN
             </button>
 
             <a
               href="/history"
-              className="bg-[#fe532f] text-white text-2xl rounded-full w-[70%] h-16 flex justify-center items-center shadow-lg hover:bg-[#e04529] transition-all"
+              className="bg-[#fe532f] text-white text-lg rounded-full w-[70%] h-16 flex justify-center items-center shadow-lg hover:bg-[#e04529] transition-all"
             >
               ATTEMPT HISTORY
             </a>
           </>
-
           :
           <>
 
-            <div className='text-3xl p-5 w-full text-center flex justify-between'>
+            <div className='text-2xl mb-5 w-full text-center'>
               {index + 1} of {data.length}
             </div>
 
             {/* Progress Bar */}
-            <div className="w-full bg-gray-300 rounded-full h-3 mt-3">
+            <div className="w-full bg-gray-300 rounded-full h-3">
               <div ref={progressBar}
                 className=" h-3 w-full rounded-full transition-all"
               ></div>
             </div>
 
-            <div className='text-3xl w-full mt-10'>{index + 1}. {questionSet.question}</div>
-            <ul className='w-full flex flex-col justify-between gap-5 items-center mt-10 mb-30'>
+            <div className='text-2xl w-full mt-10'>{index + 1}. {questionSet.question}</div>
+            <ul className='w-full flex flex-col justify-between gap-5 items-center mt-10 mb-10'>
               {["option1", "option2", "option3", "option4"].map((option, idx) => (
                 <li
                   key={idx}
                   onClick={(e) => check(e, idx + 1)}
                   ref={optionArray[idx]}
-                  className='w-full border-[1px] border-black py-7 px-5 rounded-2xl text-2xl cursor-pointer'
+                  className='w-full border-[1px] border-black py-7 px-5 rounded-lg text-lg cursor-pointer'
                 >
                   {questionSet[option]}
                 </li>
@@ -188,7 +187,7 @@ function QuizScreen() {
 
             <button
               onClick={showNext}
-              className={`${!lock ? 'bg-gray-400' : 'bg-[#fe532f]'} text-white text-2xl rounded-full w-[70%] h-16 transition-all duration-100 ease-in`}
+              className={`${!lock ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#fe532f] cursor-pointer'} text-white text-2xl rounded-full w-[70%] h-16 transition-all duration-100 ease-in`}
             >
               NEXT
             </button>
